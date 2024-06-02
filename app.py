@@ -25,6 +25,8 @@ class AddFilmForm(FlaskForm):
 
 @app.route('/')
 def homepage():
+    # content = {'content': 'abc'}
+    # return render_template('test_index.html'), config.OK
     with db.Session(engine) as session:
         content = {'content': db.get_all_films(session)}
     return render_template('index.html', **content), config.OK
@@ -35,11 +37,11 @@ def film(film_id: UUID):
     with db.Session(engine) as session:
         film_data = db.get_film(film_id, session)
         actors = db.get_film_actors(film_data['id'], session)
-    context = {
+    content = {
         'film': film_data,
         'actors': actors,
     }
-    return render_template('film.html', **context), config.OK
+    return render_template('film.html', **content), config.OK
 
 
 @app.route('/add_film', methods=['GET', 'POST'])
@@ -56,8 +58,8 @@ def add_film():
         return redirect(f'/film/{film_id}')
     if flag:
         msg = 'Фильм не найден, проверьте введенные данные'
-    context = {'msg': msg}
-    return render_template('add_film.html', **context, form=form), config.OK
+    content = {'msg': msg}
+    return render_template('add_film.html', **content, form=form), config.OK
 
 
 @app.post('/<model>/create')

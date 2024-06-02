@@ -7,15 +7,15 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.exc import DataError, IntegrityError, ProgrammingError
 from sqlalchemy.orm import Session, exc
 
-from imdb_api import get_film_data, get_film_actors_data
+from films_api import get_film_data, get_film_actors_data
 from models import Film, Actor, FilmToActor
 
 
 def get_db_url() -> str:
     load_dotenv()
-    pg_vars = 'PG_USER', 'PG_PASSWORD', 'PG_HOST', 'PG_PORT', 'PG_DBNAME'
-    credentials = [os.environ.get(pg_var) for pg_var in pg_vars]
-    return 'postgresql+psycopg2://{0}:{1}@{2}:{3}/{4}'.format(*credentials)
+    PG_VARS = 'PG_HOST', 'PG_PORT', 'PG_USER', 'PG_PASSWORD', 'PG_DBNAME'
+    credentials = {var: os.environ.get(var) for var in PG_VARS}
+    return 'postgresql+psycopg2://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DBNAME}'.format(**credentials)
 
 
 engine = create_engine(get_db_url(), echo=False)

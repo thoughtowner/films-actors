@@ -27,13 +27,13 @@ POST_DATA = (
 
 
 @pytest.mark.parametrize('link', LINKS)
-def test_get(link: str):
+def test_get(link: str) -> None:
     response = requests.get(link, timeout=10)
     assert response.status_code == config.OK
 
 
 @pytest.mark.parametrize('model, model_data', POST_DATA)
-def test_post_delete(model: str, model_data: dict):
+def test_post_delete(model: str, model_data: dict) -> None:
     if model == 'actor':
         film_id = requests.post(
             f'{URL}film/{CREATE}',

@@ -6,3 +6,7 @@ COPY . .
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt
+
+RUN chmod +x runner.sh
+
+ENTRYPOINT ["./runner.sh"]
