@@ -1,0 +1,9 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<form method="post">
+    {{ form.hidden_tag() }}
+    {{ form.imbd_id.label }} {{ form.imbd_id() }}
+    {{ form.submit() }}
+</form>
+<h1>{{ msg }}</h1>
+{% endblock %}

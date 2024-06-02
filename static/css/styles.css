@@ -1,0 +1,40 @@
+body {
+    position: relative;
+}
+
+.home_link {
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    margin-left: 3%;
+}
+
+.add_film_link {
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    float: right;
+    margin-right: 3%;
+}
+
+ul.list li{
+    width: auto;
+    float: left;
+    width: 200px;
+    text-align: center;
+    list-style-type: none;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin: 1%;
+    background-color: #c1ebfc;
+  }
+
+ul.list h3{
+    text-align: center;
+}
+
+img {
+    border-radius: 5px;
+    width: 150px;
+    height: 150px;
+}
