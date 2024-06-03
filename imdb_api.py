@@ -174,5 +174,3 @@ def get_film_actors_data(imbd_id: str):
         actor_data = get_actor_data(actor_imbd_id)
         actors_data_list.append(actor_data)
     return actors_data_list
-
-print(get_film_data('tt0069281'))
