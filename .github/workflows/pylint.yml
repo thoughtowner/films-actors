@@ -37,7 +37,7 @@ jobs:
         envkey_PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
         envkey_PG_PORT: ${{ secrets.PG_PORT }}
         envkey_PG_HOST: ${{ secrets.PG_HOST }}
-        envkey_FOOTBAll_KEY: ${{ secrets.FOOTBAll_KEY }}
+        envkey_MYAPIFILMS_KEY: ${{ secrets.MYAPIFILMS_KEY }}
         envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
         envkey_FLASK_PORT: ${{ secrets.FLASK_PORT}}
     - name: Start docker container

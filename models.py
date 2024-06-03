@@ -29,7 +29,7 @@ class Film(Base, IDMixin):
 
     __tablename__ = 'films'
 
-    imbd_id: Mapped[str] = mapped_column()
+    imdb_id: Mapped[str] = mapped_column()
     title: Mapped[Optional[str]] = mapped_column(nullable=True)
     imdb_rating: Mapped[Optional[float]] = mapped_column(nullable=True)
     year: Mapped[Optional[int]] = mapped_column(nullable=True)
@@ -41,7 +41,7 @@ class Film(Base, IDMixin):
     )
 
     __table_args__ = (
-        UniqueConstraint('imbd_id', name='film_unique_imbd_id'),
+        UniqueConstraint('imdb_id', name='film_unique_imdb_id'),
         CheckConstraint('length(title) <= 200', name='title_length_less_than_or_equal_200'),
         CheckConstraint(
             'imdb_rating >= 0 and imdb_rating <= 10',
@@ -56,7 +56,7 @@ class Actor(Base, IDMixin):
 
     __tablename__ = 'actors'
 
-    imbd_id: Mapped[str] = mapped_column()
+    imdb_id: Mapped[str] = mapped_column()
     full_name: Mapped[Optional[str]] = mapped_column(nullable=True)
     height: Mapped[Optional[str]] = mapped_column(nullable=True)
     photo: Mapped[Optional[str]] = mapped_column(nullable=True, default=ACTOR_IMAGE)
@@ -68,7 +68,7 @@ class Actor(Base, IDMixin):
     )
 
     __table_args__ = (
-        UniqueConstraint('imbd_id', name='actor_unique_imbd_id'),
+        UniqueConstraint('imdb_id', name='actor_unique_imdb_id'),
         CheckConstraint('length(full_name) <= 200'),
         CheckConstraint('birth_date <= CURRENT_DATE', name='check_birth_date'),
     )

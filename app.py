@@ -24,7 +24,7 @@ engine = db.engine
 class AddFilmForm(FlaskForm):
     """Form for adding a new film."""
 
-    imbd_id = StringField('Enter the film imbd_id: ')
+    imdb_id = StringField('Enter the film imdb_id: ')
     submit = SubmitField('Submit')
 
 
@@ -77,7 +77,7 @@ def add_film():
     film_id = None
     if form.validate_on_submit():
         with db.Session(engine) as session:
-            film_id = db.add_film_api(form.imbd_id.data, session)
+            film_id = db.add_film_api(form.imdb_id.data, session)
         flag = True
     if film_id:
         return redirect(f'/film/{film_id}')

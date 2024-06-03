@@ -2,39 +2,33 @@ body {
     position: relative;
 }
 
+div.topnav {
+    background-color: #333;
+    overflow: hidden;
+}
+
 .home_link {
     display: inline-block;
     text-decoration: none;
-    color: black;
-    margin-left: 3%;
+    color: #dbdbdb;
+    margin-left: 5%;
 }
 
 .add_film_link {
     display: inline-block;
     text-decoration: none;
-    color: black;
-    float: right;
-    margin-right: 3%;
+    color: #dbdbdb;
+    margin-left: 3%;
 }
 
-ul.list li{
-    width: auto;
+ul.list li {
     float: left;
-    width: 200px;
-    text-align: center;
     list-style-type: none;
-    border: 2px solid black;
-    border-radius: 10px;
     margin: 1%;
-    background-color: #c1ebfc;
-  }
-
-ul.list h3{
-    text-align: center;
 }
 
 img {
-    border-radius: 5px;
-    width: 150px;
-    height: 150px;
+    width: 500px;
+    height: 750px;
+    border: 3px solid black;
 }

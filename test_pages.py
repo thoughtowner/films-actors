@@ -8,7 +8,7 @@ import requests
 
 import config
 
-film_data = {'imbd_id': 'tt0069281'}
+film_data = {'imdb_id': 'tt0069281'}
 actor_data = {'imdb_id': 'nm0000059'}
 
 CREATE = 'create'

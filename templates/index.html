@@ -1,16 +1,18 @@
 {% extends "base_generic.html" %}
 {% block content %}
-  {% if content %}
-    <h1 style="text-align: center;">Фильмы</h1>
+  {% if films %}
     <ul class ="list">
-      {% for film in content %}
-        <li> <a href="{{ url_for('film', film_id=film['id']) }}" style="text-decoration: none; color: black;">
-          <h3>{{ film['name'] }}</h3>
+      {% for film in films %}
+        <li> <a href="{{ url_for('film', film_id=film['id']) }}" style="text-decoration: none; color: #dbdbdb;">
           <img src="{{ film['poster'] }}">
+          <h2>Title: {{ film['title'] }} ({{ film['imdb_id'] }})</h2>
+          <h2>Year: {{ film['year'] }}</h2>
+          <h2>Country: {{ film['country'] }}</h2>
+          <h2>IMDB Rating: {{ film['imdb_rating'] }}</h2>
         </a></li>
       {% endfor %}
     </ul>
   {% else %}
-    <p> Тут пусто</p>
+    <p>No data</p>
   {% endif %}
 {% endblock %}

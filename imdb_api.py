@@ -57,7 +57,7 @@ def get_data(options: dict) -> dict:
 
     options[entities[entity]] = options.pop(entity)
     options.update(default_options)
-    response = requests.get(config.MYAPIFILMS_URL, params=options, timeout=10)
+    response = requests.get(config.MYAPIFILMS_URL, params=options, timeout=20)
     if response.status_code != config.OK:
         raise ForeignApiError(response.status_code)
     return response.json()
@@ -76,22 +76,22 @@ def add_non_sequence_fields(non_sequence_fields: dict, model_data: dict, all_mod
         dict: The updated model data dictionary with additional non-sequence fields.
     """
     for model_field, api_field in non_sequence_fields.items():
-        model_data[model_field] = all_model_data.get(api_field, None)
+            model_data[model_field] = all_model_data.get(api_field, None) if api_field in all_model_data else None
     return model_data
 
 
-def get_film_data(imbd_id: str):
+def get_film_data(imdb_id: str):
     """
     Retrieve detailed film data from an external API.
 
     Args:
-        imbd_id (str): The IMDb ID of the film to fetch data for.
+        imdb_id (str): The IMDb ID of the film to fetch data for.
 
     Returns:
         dict: A dictionary containing formatted film data.
     """
-    all_data = get_data({'film': imbd_id})
-    if all_data['error']:
+    all_data = get_data({'film': imdb_id})
+    if 'error' in all_data:
         return None
     all_film_data = all_data['data']['movies'][0]
     non_sequence_fields = {
@@ -103,24 +103,24 @@ def get_film_data(imbd_id: str):
     country = {'country': 'countries'}
     country_key = list(country.keys())[0]
 
-    film_data = {'imbd_id': imbd_id}
+    film_data = {'imdb_id': imdb_id}
     film_data = add_non_sequence_fields(non_sequence_fields, film_data, all_film_data)
-    country_api_value = all_film_data.get(country[country_key], None)
+    country_api_value = all_film_data.get(country[country_key], None) if country_key in all_film_data else None
     film_data[country_key] = country_api_value[0] if country_api_value else None
     return film_data
 
 
-def get_actor_data(imbd_id: str):
+def get_actor_data(imdb_id: str):
     """
     Retrieve detailed actor data from an external API.
 
     Args:
-        imbd_id (str): The IMDb ID of the actor to fetch data for.
+        imdb_id (str): The IMDb ID of the actor to fetch data for.
 
     Returns:
         dict: A dictionary containing formatted actor data.
     """
-    all_data = get_data({'actor': imbd_id, 'bornDied': 1})
+    all_data = get_data({'actor': imdb_id, 'bornDied': 1})
     non_sequence_fields = {
         'full_name': 'name',
         'height': 'height',
@@ -132,7 +132,7 @@ def get_actor_data(imbd_id: str):
     }
 
     actor_data = add_non_sequence_fields(
-        non_sequence_fields, {'imbd_id': imbd_id}, all_data['data']['names'][0],
+        non_sequence_fields, {'imdb_id': imdb_id}, all_data['data']['names'][0],
     )
     born_death_actor_data = all_data['data']['names'][0]['bornDeath']
     if born_death_actor_data:
@@ -153,24 +153,24 @@ def get_actor_data(imbd_id: str):
     return actor_data
 
 
-def get_film_actors_data(imbd_id: str):
+def get_film_actors_data(imdb_id: str):
     """
     Retrieve a list of actors associated with a film from an external API.
 
     Args:
-        imbd_id (str): The IMDb ID of the film whose actors' data is to be fetched.
+        imdb_id (str): The IMDb ID of the film whose actors' data is to be fetched.
 
     Returns:
         list: A list of dictionaries, \
             each containing formatted data for an actor associated with the film.
     """
-    all_data = get_data({'film': imbd_id, 'actors': 1})
-    if all_data['error']:
+    all_data = get_data({'film': imdb_id, 'actors': 1})
+    if 'error' in all_data:
         return None
     film_actors = all_data['data']['movies'][0]['actors']
     actors_data_list = []
     for actor in film_actors:
-        actor_imbd_id = actor['idIMDB']
-        actor_data = get_actor_data(actor_imbd_id)
+        actor_imdb_id = actor['idIMDB']
+        actor_data = get_actor_data(actor_imdb_id)
         actors_data_list.append(actor_data)
     return actors_data_list

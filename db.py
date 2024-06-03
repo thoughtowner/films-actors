@@ -32,62 +32,40 @@ def get_db_url() -> str:
 engine = create_engine(get_db_url(), echo=False)
 
 
-def session_scalar_where(
-    class_object_model,
-    class_object_model_field,
-    class_object_model_value,
-    session: Session,
-):
-    """
-    Execute a scalar query to find the first result where a specified field matches a value.
-
-    Args:
-        class_object_model: The SQLAlchemy ORM class representing the table to query.
-        class_object_model_field: The field of the class object model to filter by.
-        class_object_model_value: The value to match against the specified field.
-        session (Session): The current database session.
-
-    Returns:
-        Any: The first result that matches the criteria, or None if no match is found.
-    """
-    return session.scalar(
-        select(class_object_model).where(class_object_model_field == class_object_model_value),
-    )
-
-
-def add_film_api(imbd_id: str, session: Session) -> Film | None:
+def add_film_api(imdb_id: str, session: Session) -> Film | None:
     """
     Add a film to the database if it doesn't exist already.
 
     Args:
-        imbd_id (str): The IMDb ID of the film.
+        imdb_id (str): The IMDb ID of the film.
         session (Session): The current database session.
 
     Returns:
         Film | None: The added film instance or None if the film exists or cannot be added.
     """
-    film = session_scalar_where(Film, Film.imbd_id, imbd_id)
+    film = session.scalar(select(Film).where(Film.imdb_id == imdb_id))
     if film:
-        return film
-    film_data = get_film_data(imbd_id)
+        return film.id
+    film_data = get_film_data(imdb_id)
     if film_data:
         film = Film(**film_data)
         session.add(film)
         session.commit()
-        return film
+        add_actors_api(film.id, imdb_id, session)
+        return film.id
     return None
 
 
-def add_actors_api(film_id: Film, imbd_id: str, session: Session):
+def add_actors_api(film_id: Film, imdb_id: str, session: Session):
     """
     Add actors associated with a film to the database.
 
     Args:
         film_id (Film): The film instance to associate actors with.
-        imbd_id (str): The IMDb ID of the film.
+        imdb_id (str): The IMDb ID of the film.
         session (Session): The current database session.
     """
-    actors_data = get_film_actors_data(imbd_id)
+    actors_data = get_film_actors_data(imdb_id)
     actors = [Actor(**actor_data) for actor_data in actors_data]
     session.add_all(actors)
     session.flush()
@@ -106,10 +84,10 @@ def create_delete(class_object_model) -> Callable:
     Returns:
         Callable: A function that deletes an class object given its ID.
     """
-    def delete_class_object(object_id: UUID, session: Session) -> int | None:
+    def delete_class_object(class_object_id: UUID, session: Session) -> int | None:
         try:
-            class_object = session_scalar_where(
-                class_object_model, class_object_model.id, object_id,
+            class_object = session.scalar(
+                select(class_object_model).where(class_object_model.id == class_object_id),
             )
             if not class_object:
                 return None
@@ -197,8 +175,8 @@ def create_get(class_object_model) -> Callable:
         Callable: A function that retrieves an class object from the database.
     """
     def get_class_object(class_object_id: dict, session: Session) -> dict | None:
-        class_object = session_scalar_where(
-            class_object_model, class_object_model.id, class_object_id,
+        class_object = session.scalar(
+            select(class_object_model).where(class_object_model.id == class_object_id),
         )
         if not class_object:
             return None

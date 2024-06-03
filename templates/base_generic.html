@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  {% block title %}<title>football</title>{% endblock %}
+  {% block title %}<title>films and actors</title>{% endblock %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-  <div>
+  <div class="topnav">
     <a href="{{ url_for('homepage')}}" class = "home_link">
-      <h1>Домашняя страница</h1>
+      <h1>Homepage</h1>
     </a>
     <a href="{{ url_for('add_film')}}" class = "add_film_link">
-      <h1>Добавить фильм</h1>
+      <h1>Add film</h1>
     </a>
   </div>
 </head>
-<body style="background-color: #deeef5;">
+<body style="background-color: #2c2c2c;">
   {% block content %}<!-- default content text (typically empty) -->{% endblock %}
 </body>
 </html>
