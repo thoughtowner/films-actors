@@ -25,8 +25,6 @@ class AddFilmForm(FlaskForm):
 
 @app.route('/')
 def homepage():
-    # content = {'content': 'abc'}
-    # return render_template('test_index.html'), config.OK
     with db.Session(engine) as session:
         content = {'content': db.get_all_films(session)}
     return render_template('index.html', **content), config.OK
