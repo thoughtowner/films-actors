@@ -28,6 +28,9 @@ class AddFilmForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+db_session = db.Session(engine)
+
+
 @app.route('/')
 def homepage():
     """
@@ -36,7 +39,7 @@ def homepage():
     Returns:
         A rendered template of index.html with all films data.
     """
-    with db.Session(engine) as session:
+    with db_session as session:
         films = {'films': db.get_all_films(session)}
     return render_template('index.html', **films), config.OK
 
@@ -52,7 +55,7 @@ def film(film_id: UUID):
     Returns:
         A rendered template of film.html with the film's data and its actors.
     """
-    with db.Session(engine) as session:
+    with db_session as session:
         film_data = db.get_film(film_id, session)
         actors = db.get_film_actors(film_data['id'], session)
     film_actors = {
@@ -63,10 +66,21 @@ def film(film_id: UUID):
 
 @app.route('/actor/<actor_id>')
 def actor(actor_id: UUID):
-    with db.Session(engine) as session:
-        actor = db.get_actor(actor_id, session)
+    """
+    Render a page displaying detailed information about a specific actor.
+
+    Args:
+        actor_id (UUID): The unique identifier of the actor to display.
+
+    Returns:
+        tuple: A tuple containing the rendered HTML template \
+            and an HTTP status code indicating success. \
+                The template displays detailed information about the specified actor.
+    """
+    with db_session as session:
+        actor_info = db.get_actor(actor_id, session)
     actor_data = {
-        'actor': actor,
+        'actor': actor_info,
     }
     return render_template('actor.html', **actor_data), config.OK
 
@@ -85,7 +99,7 @@ def add_film():
     flag = False
     film_id = None
     if form.validate_on_submit():
-        with db.Session(engine) as session:
+        with db_session as session:
             film_id = db.add_film_api(form.imdb_id.data, session)
         flag = True
     if film_id:
@@ -114,7 +128,7 @@ def create_model(model: str):
         'film_to_actor': db.add_film_to_actor,
     }
     if model in functions.keys():
-        with db.Session(engine) as session:
+        with db_session as session:
             res = functions[model](body, session)
     else:
         return '', config.NOT_FOUND
@@ -141,7 +155,7 @@ def update_model(model: str):
         'film_to_actor': db.update_film_to_actor,
     }
     if model in functions.keys():
-        with db.Session(engine) as session:
+        with db_session as session:
             res = functions[model](body, session)
     else:
         return '', config.NOT_FOUND
@@ -168,7 +182,7 @@ def delete_model(model: str):
         'film_to_actor': db.delete_film_to_actor,
     }
     if model in functions.keys():
-        with db.Session(engine) as session:
+        with db_session as session:
             res = functions[model](body['id'], session)
     else:
         return '', config.NOT_FOUND
@@ -194,7 +208,7 @@ def get_model_all(model: str):
         'actors': db.get_all_actors,
     }
     if model in functions.keys():
-        with db.Session(engine) as session:
+        with db_session as session:
             res = {f'{model}': functions[model](session)}
     else:
         return '', config.NOT_FOUND

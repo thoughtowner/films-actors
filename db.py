@@ -10,8 +10,7 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.exc import DataError, IntegrityError, ProgrammingError
 from sqlalchemy.orm import Session, exc
 
-# from imdb_api import get_film_actors_data, get_film_data
-from imdb_api import get_film_data_from_tg, get_film_actors_data_from_tg
+from imdb_api import get_film_actors_data, get_film_data
 from models import Actor, Film, FilmToActor
 
 
@@ -47,8 +46,7 @@ def add_film_api(imdb_id: str, session: Session) -> Film | None:
     film = session.scalar(select(Film).where(Film.imdb_id == imdb_id))
     if film:
         return film.id
-    # film_data = get_film_data(imdb_id)
-    film_data = get_film_data_from_tg(imdb_id)
+    film_data = get_film_data(imdb_id)
     if film_data:
         film = Film(**film_data)
         session.add(film)
@@ -67,12 +65,15 @@ def add_actors_api(film_id: Film, imdb_id: str, session: Session):
         imdb_id (str): The IMDb ID of the film.
         session (Session): The current database session.
     """
-    # actors_data = get_film_actors_data(imdb_id)
-    actors_data = get_film_actors_data_from_tg(imdb_id)
-    actors = [[Actor(**actor_data['actor']), actor_data['character']] for actor_data in actors_data]
+    actors_data = get_film_actors_data(imdb_id)
+    actors = [
+        [Actor(**actor_data['actor']), actor_data['character']] for actor_data in actors_data
+    ]
     session.add_all([actor[0] for actor in actors])
     session.flush()
-    film_to_actors = [FilmToActor(film_id=film_id, actor_id=actor[0].id, character=actor[1]) for actor in actors]
+    film_to_actors = [
+        FilmToActor(film_id=film_id, actor_id=actor[0].id, character=actor[1]) for actor in actors
+    ]
     session.add_all(film_to_actors)
     session.commit()
 
@@ -222,45 +223,33 @@ get_all_films = create_get_all(Film)
 get_all_actors = create_get_all(Actor)
 
 
-# def get_film_actors(film_id, session: Session) -> list[dict]:
-#     """
-#     Retrieve all actors associated with a film.
-
-#     Args:
-#         film_id: The ID of the film.
-#         session (Session): The current database session.
-
-#     Returns:
-#         list[dict]: A list of dictionaries representing the actors associated with the film.
-#     """
-#     try:
-#         query = select(Actor).select_from(
-#             FilmToActor.__table__.join(
-#                 Actor, FilmToActor.actor_id == Actor.id,
-#             )).where(FilmToActor.film_id == film_id)
-#         actors = session.scalars(query).all()
-#     except DataError:
-#         return None
-#     if actors:
-#         return [actor.__dict__ for actor in actors]
-#     return None
-
-
 def get_film_actors(film_id, session: Session) -> list[dict]:
+    """
+    Retrieve a list of actors associated with a specific film along with their characters.
+
+    Args:
+        film_id: The ID of the film to retrieve actors for.
+        session (Session): The SQLAlchemy session used to execute the query.
+
+    Returns:
+        list[dict]: A list of dictionaries, \
+            each representing an actor and their character role in the specified film. \
+                Returns None if an error occurs during execution \
+                    or if no actors are associated with the film.
+    """
     try:
         query = select(Actor, FilmToActor.character.label('character')).select_from(
             FilmToActor.__table__.join(
                 Actor, FilmToActor.actor_id == Actor.id,
             )).where(FilmToActor.film_id == film_id)
-        result = session.execute(query)
+        actors_with_characters_data = session.execute(query)
         actors_with_characters = []
-        for row in result:
+        for row in actors_with_characters_data:
             actor_dict = row.Actor.__dict__
             del actor_dict['_sa_instance_state']
             actor_dict['character'] = row.character
             actors_with_characters.append(actor_dict)
-    except Exception as e:
-        print(f'An error occurred: {e}')
+    except Exception:
         return None
     if actors_with_characters:
         return actors_with_characters

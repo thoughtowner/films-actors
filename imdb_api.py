@@ -1,8 +1,7 @@
 """A module for working with an external imdb api (MYAPIFILMS)."""
 
 
-# from datetime import datetime
-import datetime
+from datetime import datetime
 from os import getenv
 
 import requests
@@ -11,6 +10,9 @@ from dotenv import load_dotenv
 import config
 
 load_dotenv()
+
+
+TIMEOUT = 30
 
 
 class ForeignApiError(Exception):
@@ -58,7 +60,7 @@ def get_data(options: dict) -> dict:
 
     options[entities[entity]] = options.pop(entity)
     options.update(default_options)
-    response = requests.get(config.MYAPIFILMS_URL, params=options, timeout=30)
+    response = requests.get(config.MYAPIFILMS_URL, params=options, timeout=TIMEOUT)
     if response.status_code != config.OK:
         raise ForeignApiError(response.status_code)
     return response.json()
@@ -179,47 +181,3 @@ def get_film_actors_data(imdb_id: str):
         actor_data_dict = {'actor': actor_data, 'character': character}
         actors_data_list.append(actor_data_dict)
     return actors_data_list
-
-
-
-
-
-
-def get_film_data_from_tg(imdb_id: str):
-    all_films = [
-        {'imdb_id': 'tt0137523', 'title': 'Fight Club', 'imdb_rating': 8.8, 'year': 1999, 'poster': 'https://m.media-amazon.com/images/M/MV5BMmEzNTkxYjQtZTc0MC00YTVjLTg5ZTEtZWMwOWVlYzY0NWIwXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_FMjpg_UX1000_.jpg', 'country': 'Germany'},
-        {'imdb_id': 'tt0068646', 'title': 'The Godfather', 'imdb_rating': 9.2, 'year': 1972, 'poster': 'https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_FMjpg_UX1000_.jpg', 'country': 'United States'},
-        {'imdb_id': 'tt6966692', 'title': 'Green Book', 'imdb_rating': 8.2, 'year': 2018, 'poster': 'https://m.media-amazon.com/images/M/MV5BYzIzYmJlYTYtNGNiYy00N2EwLTk4ZjItMGYyZTJiOTVkM2RlXkEyXkFqcGdeQXVyODY1NDk1NjE@._V1_FMjpg_UX1000_.jpg', 'country': 'United States'},
-        {'imdb_id': 'tt0109830', 'title': 'Forrest Gump', 'imdb_rating': 8.8, 'year': 1994, 'poster': 'https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_FMjpg_UX1000_.jpg', 'country': 'United States'},
-        {'imdb_id': 'tt1853728', 'title': 'Django Unchained', 'imdb_rating': 8.5, 'year': 2012, 'poster': 'https://m.media-amazon.com/images/M/MV5BMjIyNTQ5NjQ1OV5BMl5BanBnXkFtZTcwODg1MDU4OA@@._V1_FMjpg_UX1000_.jpg', 'country': 'United States'}
-    ]
-    if imdb_id == 'tt0137523':
-        return all_films[0]
-    if imdb_id == 'tt0068646':
-        return all_films[1]
-    if imdb_id == 'tt6966692':
-        return all_films[2]
-    if imdb_id == 'tt0109830':
-        return all_films[3]
-    if imdb_id == 'tt1853728':
-        return all_films[4]
-    
-
-def get_film_actors_data_from_tg(imdb_id: str):
-    all_film_actors = [
-        [{'actor': {'imdb_id': 'nm0000093', 'full_name': 'Brad Pitt', 'height': "5' 11″ (1.80 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMjA1MjE2MTQ2MV5BMl5BanBnXkFtZTcwMjE5MDY0Nw@@._V1_QL75_UX90_CR0,1,90,133_.jpg', 'birth_date': datetime.date(1963, 12, 18), 'place_of_birth': 'Shawnee, Oklahoma, USA'}, 'character': 'Tyler Durden'}, {'actor': {'imdb_id': 'nm0001570', 'full_name': 'Edward Norton', 'height': "6' (1.83 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTYwNjQ5MTI1NF5BMl5BanBnXkFtZTcwMzU5MTI2Mw@@._V1_QL75_UY133_CR7,0,90,133_.jpg', 'birth_date': datetime.date(1969, 8, 18), 'place_of_birth': 'Boston, Massachusetts, USA'}, 'character': 'Narrator'}, {'actor': {'imdb_id': 'nm0001533', 'full_name': 'Meat Loaf', 'height': "6' (1.83 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTIzNTQ4MjYyOV5BMl5BanBnXkFtZTcwNzgwNTEzMg@@._V1_QL75_UY133_CR3,0,90,133_.jpg', 'birth_date': datetime.date(1947, 9, 27), 'place_of_birth': 'Dallas, Texas, USA'}, 'character': 'Robert Paulsen'}, {'actor': {'imdb_id': 'nm0340260', 'full_name': 'Zach Grenier', 'height': "5' 9″ (1.75 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BNjg3MzQxMDAxN15BMl5BanBnXkFtZTgwODMwNTk5ODE@._V1_QL75_UY133_CR12,0,90,133_.jpg', 'birth_date': None, 'place_of_birth': 'Englewood, New Jersey, USA'}, 'character': 'Richard Chesler (Regional Manager)'}, {'actor': {'imdb_id': 'nm0037118', 'full_name': 'Richmond Arquette', 'height': "5' 10″ (1.78 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMjM1NDgxOTQwM15BMl5BanBnXkFtZTgwNzEyNjg4MDE@._V1_QL75_UY133_CR74,0,90,133_.jpg', 'birth_date': datetime.date(1963, 8, 21), 'place_of_birth': 'New York City, New York, USA'}, 'character': 'Intern at Hospital'}],
-        [{'actor': {'imdb_id': 'nm0000008', 'full_name': 'Marlon Brando', 'height': "5' 8¾″ (1.75 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTg3MDYyMDE5OF5BMl5BanBnXkFtZTcwNjgyNTEzNA@@._V1_QL75_UY133_CR41,0,90,133_.jpg', 'birth_date': datetime.date(1924, 4, 3), 'place_of_birth': 'Omaha, Nebraska, USA'}, 'character': 'Don Vito Corleone'}, {'actor': {'imdb_id': 'nm0000199', 'full_name': 'Al Pacino', 'height': "5' 6″ (1.68 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTQzMzg1ODAyNl5BMl5BanBnXkFtZTYwMjAxODQ1._V1_QL75_UX90_CR0,1,90,133_.jpg', 'birth_date': datetime.date(1940, 4, 25), 'place_of_birth': 'Manhattan, New York City, New York, USA'}, 'character': 'Michael Corleone'}, {'actor': {'imdb_id': 'nm0001001', 'full_name': 'James Caan', 'height': "5' 9¼″ (1.76 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTI5NjkyNDQ3NV5BMl5BanBnXkFtZTcwNjY5NTQ0Mw@@._V1_QL75_UX90_CR0,1,90,133_.jpg', 'birth_date': datetime.date(1940, 3, 26), 'place_of_birth': 'The Bronx, New York, USA'}, 'character': 'Sonny Corleone'}, {'actor': {'imdb_id': 'nm0000473', 'full_name': 'Diane Keaton', 'height': "5' 6½″ (1.69 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTY5NDI5OTEyOF5BMl5BanBnXkFtZTgwMzU4NDI1NzM@._V1_QL75_UY133_CR2,0,90,133_.jpg', 'birth_date': datetime.date(1946, 1, 5), 'place_of_birth': 'Los Angeles, California, USA'}, 'character': 'Kay Adams'}, {'actor': {'imdb_id': 'nm0144710', 'full_name': 'Richard S. Castellano', 'height': "5' 9″ (1.75 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMjI2MzA3MjQ5N15BMl5BanBnXkFtZTcwMzY5NDYwOA@@._V1_QL75_UY133_CR1,0,90,133_.jpg', 'birth_date': datetime.date(1933, 9, 4), 'place_of_birth': 'The Bronx, New York City, New York, USA'}, 'character': 'Clemenza'}],
-        [{'actor': {'imdb_id': 'nm0001557', 'full_name': 'Viggo Mortensen', 'height': "5' 11″ (1.80 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BNDQzOTg4NzA2Nl5BMl5BanBnXkFtZTcwMzkwNjkxMg@@._V1_QL75_UX90_CR0,0,90,133_.jpg', 'birth_date': datetime.date(1958, 10, 20), 'place_of_birth': 'Manhattan, New York City, New York, USA'}, 'character': 'Tony Lip'}, {'actor': {'imdb_id': 'nm0991810', 'full_name': 'Mahershala Ali', 'height': "6' 2″ (1.88 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BZThiZjJjNWYtNGRlYS00NDdkLTk0MTMtYjEwYzM1MDExNTYwXkEyXkFqcGdeQXVyNjY1MTg4Mzc@._V1_QL75_UY133_CR16,0,90,133_.jpg', 'birth_date': datetime.date(1974, 2, 16), 'place_of_birth': 'Oakland, California, USA'}, 'character': 'Dr. Donald Shirley'}, {'actor': {'imdb_id': 'nm0004802', 'full_name': 'Linda Cardellini', 'height': "5' 3″ (1.60 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTQ2MDM4MTM2NF5BMl5BanBnXkFtZTgwMTM4MjYyMDE@._V1_QL75_UY133_CR3,0,90,133_.jpg', 'birth_date': datetime.date(1975, 6, 25), 'place_of_birth': 'Redwood City, California, USA'}, 'character': 'Dolores'}, {'actor': {'imdb_id': 'nm1724319', 'full_name': 'Sebastian Maniscalco', 'height': "5' 9″ (1.75 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BOTA0OWM4NWUtMTRiOC00MzM3LTk3NzktMjQyNjIyOGI4ZjUyXkEyXkFqcGdeQXVyMTI5OTE4MzM@._V1_QL75_UX90_CR0,1,90,133_.jpg', 'birth_date': datetime.date(1973, 7, 8), 'place_of_birth': 'Chicago, Illinois, USA'}, 'character': 'Johnny Venere'}, {'actor': {'imdb_id': 'nm1221253', 'full_name': 'Dimiter D. Marinov', 'height': "5' 8″ (1.73 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BYzMwMjZiZmItMGE4MC00MGMyLTliYzctZWY0MWUyZThiNmZmXkEyXkFqcGdeQXVyMjE4ODQyODU@._V1_QL75_UY133_CR10,0,90,133_.jpg', 'birth_date': None, 'place_of_birth': None}, 'character': 'Oleg'}],
-        [{'actor': {'imdb_id': 'nm0000158', 'full_name': 'Tom Hanks', 'height': "6' (1.83 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTQ2MjMwNDA3Nl5BMl5BanBnXkFtZTcwMTA2NDY3NQ@@._V1_QL75_UY133_CR1,0,90,133_.jpg', 'birth_date': datetime.date(1956, 7, 9), 'place_of_birth': 'Concord, California, USA'}, 'character': 'Forrest Gump'}, {'actor': {'imdb_id': 'nm0000705', 'full_name': 'Robin Wright', 'height': "5' 5″ (1.65 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTU0NTc4MzEyOV5BMl5BanBnXkFtZTcwODY0ODkzMQ@@._V1_QL75_UY133_CR2,0,90,133_.jpg', 'birth_date': datetime.date(1966, 4, 8), 'place_of_birth': 'Dallas, Texas, USA'}, 'character': 'Jenny Curran'}, {'actor': {'imdb_id': 'nm0000641', 'full_name': 'Gary Sinise', 'height': "5' 8″ (1.73 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMzE4NzcyMzU3OV5BMl5BanBnXkFtZTYwOTM2NDE2._V1_QL75_UY133_CR3,0,90,133_.jpg', 'birth_date': datetime.date(1955, 3, 17), 'place_of_birth': 'Blue Island, Illinois, USA'}, 'character': 'Lieutenant Dan Taylor'}, {'actor': {'imdb_id': 'nm0000398', 'full_name': 'Sally Field', 'height': "5' 2″ (1.57 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTQwOTMyMDI4MV5BMl5BanBnXkFtZTcwMDYzMTM5OA@@._V1_QL75_UY133_CR4,0,90,133_.jpg', 'birth_date': datetime.date(1946, 11, 6), 'place_of_birth': 'Pasadena, California, USA'}, 'character': 'Mrs. Gump'}, {'actor': {'imdb_id': 'nm0931508', 'full_name': 'Rebecca Williams', 'height': None, 'photo': 'https://m.media-amazon.com/images/M/MV5BZGVmNzAzODctNjI4MS00MzI2LThiZDItOGIyZGJlNDZmZDI5XkEyXkFqcGdeQXVyNjUxMjc1OTM@._V1_QL75_UY133_CR84,0,90,133_.jpg', 'birth_date': None, 'place_of_birth': None}, 'character': 'Nurse at Park Bench'}],
-        [{'actor': {'imdb_id': 'nm0004937', 'full_name': 'Jamie Foxx', 'height': "5' 9″ (1.75 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTkyNjY1NDg3NF5BMl5BanBnXkFtZTgwNjA2MTg0MzE@._V1_QL75_UY133_CR5,0,90,133_.jpg', 'birth_date': datetime.date(1967, 12, 13), 'place_of_birth': 'Terrell, Texas, USA'}, 'character': 'Django'}, {'actor': {'imdb_id': 'nm0910607', 'full_name': 'Christoph Waltz', 'height': "5' 7″ (1.70 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTM4MDk3OTYxOF5BMl5BanBnXkFtZTcwMDk5OTUwOQ@@._V1_QL75_UY133_CR4,0,90,133_.jpg', 'birth_date': datetime.date(1956, 10, 4), 'place_of_birth': 'Vienna, Austria'}, 'character': 'Dr. King Schultz'}, {'actor': {'imdb_id': 'nm0000138', 'full_name': 'Leonardo DiCaprio', 'height': "6' (1.83 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMjI0MTg3MzI0M15BMl5BanBnXkFtZTcwMzQyODU2Mw@@._V1_QL75_UY133_CR5,0,90,133_.jpg', 'birth_date': datetime.date(1974, 11, 11), 'place_of_birth': 'Hollywood, Los Angeles, California, USA'}, 'character': 'Calvin Candie'}, {'actor': {'imdb_id': 'nm0913488', 'full_name': 'Kerry Washington', 'height': "5' 4″ (1.63 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTUxNzk2OTQzOF5BMl5BanBnXkFtZTcwMTM0NjIwNw@@._V1_QL75_UY133_CR11,0,90,133_.jpg', 'birth_date': datetime.date(1977, 1, 31), 'place_of_birth': 'The Bronx, New York City, New York, USA'}, 'character': 'Broomhilda von Shaft'}, {'actor': {'imdb_id': 'nm0000168', 'full_name': 'Samuel L. Jackson', 'height': "6' 2½″ (1.89 m)", 'photo': 'https://m.media-amazon.com/images/M/MV5BMTQ1NTQwMTYxNl5BMl5BanBnXkFtZTYwMjA1MzY1._V1_QL75_UX90_CR0,1,90,133_.jpg', 'birth_date': datetime.date(1948, 12, 21), 'place_of_birth': 'Washington D.C., USA'}, 'character': 'Stephen'}]
-    ]
-    if imdb_id == 'tt0137523':
-        return all_film_actors[0]
-    if imdb_id == 'tt0068646':
-        return all_film_actors[1]
-    if imdb_id == 'tt6966692':
-        return all_film_actors[2]
-    if imdb_id == 'tt0109830':
-        return all_film_actors[3]
-    if imdb_id == 'tt1853728':
-        return all_film_actors[4]
