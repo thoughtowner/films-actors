@@ -5,7 +5,7 @@ from os import environ
 from uuid import UUID
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, redirect, render_template, request
+from flask import Flask, redirect, render_template, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 
@@ -188,32 +188,6 @@ def delete_model(model: str):
         return '', config.NOT_FOUND
     if res:
         return '', config.NO_CONTENT
-    return '', config.BAD_REQUEST
-
-
-@app.get('/<model>')
-def get_model_all(model: str):
-    """
-    Retrieve all records of a specified model.
-
-    Args:
-        model (str): The type of records to retrieve ('films' or 'actors').
-
-    Returns:
-        A JSON response containing all records of the specified model, \
-            otherwise an error status code.
-    """
-    functions = {
-        'films': db.get_all_films,
-        'actors': db.get_all_actors,
-    }
-    if model in functions.keys():
-        with db_session as session:
-            res = {f'{model}': functions[model](session)}
-    else:
-        return '', config.NOT_FOUND
-    if res:
-        return jsonify(res), config.OK
     return '', config.BAD_REQUEST
 
 

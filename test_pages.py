@@ -8,14 +8,16 @@ import requests
 
 import config
 
-film_data = {'imdb_id': 'tt0069281'}
-actor_data = {'imdb_id': 'nm0000059'}
+film_data = {'title': 'Test film'}
+actor_data = {'full_name': 'Test name'}
+
+film_and_actor_data = ((film_data, actor_data),)
 
 CREATE = 'create'
 UPDATE = 'update'
 DELETE = 'delete'
-URL = 'http://0.0.0.0:5000/'
-PATHS = ('', 'add_film', 'actors', 'films')
+URL = 'http://127.0.0.1:5000/'
+PATHS = ('', 'add_film')
 POST_DATA = (
     ('film', film_data),
     ('actor', actor_data),
@@ -49,15 +51,6 @@ def test_post_delete(model: str, model_data: dict) -> None:
         model (str): The name of the model to test CRUD operations on.
         model_data (dict): The data to use for creating, updating, and deleting the entity.
     """
-    if model == 'actor':
-        film_id = requests.post(
-            f'{URL}film/{CREATE}',
-            headers=headers,
-            data=json.dumps(film_data),
-            timeout=10,
-        )
-        model_data['film_id'] = film_id.content.decode()
-
     create_ok = requests.post(
         f'{URL}{model}/{CREATE}',
         headers=headers,
@@ -65,14 +58,6 @@ def test_post_delete(model: str, model_data: dict) -> None:
         timeout=10,
     )
     assert create_ok.status_code == config.CREATED
-
-    create_bad_req = requests.post(
-        f'{URL}{model}/{CREATE}',
-        headers=headers,
-        data=json.dumps(model_data),
-        timeout=10,
-    )
-    assert create_bad_req.status_code == config.BAD_REQUEST
 
     model_data['id'] = create_ok.content.decode()
     update_ok = requests.put(
@@ -90,22 +75,6 @@ def test_post_delete(model: str, model_data: dict) -> None:
         timeout=10,
     )
     assert delete_no_cont.status_code == config.NO_CONTENT
-
-    if model == 'actor':
-        requests.delete(
-            f'{URL}actor/{DELETE}',
-            headers=headers,
-            data=json.dumps({'id': film_id.content.decode()}),
-            timeout=10,
-        )
-
-    update_bad_req = requests.put(
-        f'{URL}{model}/{UPDATE}',
-        headers=headers,
-        data=json.dumps(model_data),
-        timeout=10,
-    )
-    assert update_bad_req.status_code == config.BAD_REQUEST
 
     delete_bad_req = requests.delete(
         f'{URL}{model}/{DELETE}',

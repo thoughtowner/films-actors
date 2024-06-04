@@ -220,7 +220,6 @@ def create_get_all(class_object_model) -> Callable:
 
 
 get_all_films = create_get_all(Film)
-get_all_actors = create_get_all(Actor)
 
 
 def get_film_actors(film_id, session: Session) -> list[dict]:
