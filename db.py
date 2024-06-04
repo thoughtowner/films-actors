@@ -131,8 +131,8 @@ def create_add(class_object_model) -> Callable:
     return create_class_object
 
 
-create_film = create_add(Film)
-create_actor = create_add(Actor)
+add_film = create_add(Film)
+add_actor = create_add(Actor)
 
 
 def create_update(class_object_model) -> Callable:

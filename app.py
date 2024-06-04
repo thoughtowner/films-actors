@@ -70,6 +70,7 @@ def actor(actor_id: UUID):
     }
     return render_template('actor.html', **actor_data), config.OK
 
+
 @app.route('/add_film', methods=['GET', 'POST'])
 def add_film():
     """
@@ -108,8 +109,8 @@ def create_model(model: str):
     """
     body = request.json
     functions = {
-        'film': db.create_film,
-        'actor': db.create_actor,
+        'film': db.add_film,
+        'actor': db.add_actor,
     }
     if model in functions.keys():
         with db.Session(engine) as session:

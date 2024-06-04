@@ -29,8 +29,8 @@ class Film(Base, IDMixin):
 
     __tablename__ = 'films'
 
-    imdb_id: Mapped[str] = mapped_column()
-    title: Mapped[Optional[str]] = mapped_column(nullable=True)
+    imdb_id: Mapped[str] = mapped_column(nullable=True)
+    title: Mapped[Optional[str]] = mapped_column()
     imdb_rating: Mapped[Optional[float]] = mapped_column(nullable=True)
     year: Mapped[Optional[int]] = mapped_column(nullable=True)
     poster: Mapped[Optional[str]] = mapped_column(nullable=True, default=POSTER_IMAGE)
@@ -56,8 +56,8 @@ class Actor(Base, IDMixin):
 
     __tablename__ = 'actors'
 
-    imdb_id: Mapped[str] = mapped_column()
-    full_name: Mapped[Optional[str]] = mapped_column(nullable=True)
+    imdb_id: Mapped[str] = mapped_column(nullable=True)
+    full_name: Mapped[Optional[str]] = mapped_column()
     height: Mapped[Optional[str]] = mapped_column(nullable=True)
     photo: Mapped[Optional[str]] = mapped_column(nullable=True, default=ACTOR_IMAGE)
     birth_date: Mapped[Optional[date]] = mapped_column(nullable=True)
@@ -87,3 +87,5 @@ class FilmToActor(Base, IDMixin):
         ForeignKey('actors.id', ondelete='cascade'),
         nullable=True,
     )
+    character: Mapped[str] = mapped_column(nullable=True)
+
