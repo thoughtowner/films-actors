@@ -69,10 +69,10 @@ def add_actors_api(film_id: Film, imdb_id: str, session: Session):
     """
     # actors_data = get_film_actors_data(imdb_id)
     actors_data = get_film_actors_data_from_tg(imdb_id)
-    actors = [Actor(**actor_data) for actor_data in actors_data]
-    session.add_all(actors)
+    actors = [[Actor(**actor_data['actor']), actor_data['character']] for actor_data in actors_data]
+    session.add_all([actor[0] for actor in actors])
     session.flush()
-    film_to_actors = [FilmToActor(film_id=film_id, actor_id=actor.id) for actor in actors]
+    film_to_actors = [FilmToActor(film_id=film_id, actor_id=actor[0].id, character=actor[1]) for actor in actors]
     session.add_all(film_to_actors)
     session.commit()
 
@@ -104,6 +104,7 @@ def create_delete(class_object_model) -> Callable:
 
 delete_film = create_delete(Film)
 delete_actor = create_delete(Actor)
+delete_film_to_actor = create_delete(FilmToActor)
 
 
 def create_add(class_object_model) -> Callable:
@@ -133,6 +134,7 @@ def create_add(class_object_model) -> Callable:
 
 add_film = create_add(Film)
 add_actor = create_add(Actor)
+add_film_to_actor = create_add(FilmToActor)
 
 
 def create_update(class_object_model) -> Callable:
@@ -165,6 +167,7 @@ def create_update(class_object_model) -> Callable:
 
 update_film = create_update(Film)
 update_actor = create_update(Actor)
+update_film_to_actor = create_update(FilmToActor)
 
 
 def create_get(class_object_model) -> Callable:
@@ -219,25 +222,46 @@ get_all_films = create_get_all(Film)
 get_all_actors = create_get_all(Actor)
 
 
+# def get_film_actors(film_id, session: Session) -> list[dict]:
+#     """
+#     Retrieve all actors associated with a film.
+
+#     Args:
+#         film_id: The ID of the film.
+#         session (Session): The current database session.
+
+#     Returns:
+#         list[dict]: A list of dictionaries representing the actors associated with the film.
+#     """
+#     try:
+#         query = select(Actor).select_from(
+#             FilmToActor.__table__.join(
+#                 Actor, FilmToActor.actor_id == Actor.id,
+#             )).where(FilmToActor.film_id == film_id)
+#         actors = session.scalars(query).all()
+#     except DataError:
+#         return None
+#     if actors:
+#         return [actor.__dict__ for actor in actors]
+#     return None
+
+
 def get_film_actors(film_id, session: Session) -> list[dict]:
-    """
-    Retrieve all actors associated with a film.
-
-    Args:
-        film_id: The ID of the film.
-        session (Session): The current database session.
-
-    Returns:
-        list[dict]: A list of dictionaries representing the actors associated with the film.
-    """
     try:
-        query = select(Actor).select_from(
+        query = select(Actor, FilmToActor.character.label('character')).select_from(
             FilmToActor.__table__.join(
                 Actor, FilmToActor.actor_id == Actor.id,
             )).where(FilmToActor.film_id == film_id)
-        actors = session.scalars(query).all()
-    except DataError:
+        result = session.execute(query)
+        actors_with_characters = []
+        for row in result:
+            actor_dict = row.Actor.__dict__
+            del actor_dict['_sa_instance_state']
+            actor_dict['character'] = row.character
+            actors_with_characters.append(actor_dict)
+    except Exception as e:
+        print(f'An error occurred: {e}')
         return None
-    if actors:
-        return [actor.__dict__ for actor in actors]
+    if actors_with_characters:
+        return actors_with_characters
     return None

@@ -111,6 +111,7 @@ def create_model(model: str):
     functions = {
         'film': db.add_film,
         'actor': db.add_actor,
+        'film_to_actor': db.add_film_to_actor,
     }
     if model in functions.keys():
         with db.Session(engine) as session:
@@ -137,6 +138,7 @@ def update_model(model: str):
     functions = {
         'film': db.update_film,
         'actor': db.update_actor,
+        'film_to_actor': db.update_film_to_actor,
     }
     if model in functions.keys():
         with db.Session(engine) as session:
@@ -163,6 +165,7 @@ def delete_model(model: str):
     functions = {
         'film': db.delete_film,
         'actor': db.delete_actor,
+        'film_to_actor': db.delete_film_to_actor,
     }
     if model in functions.keys():
         with db.Session(engine) as session:

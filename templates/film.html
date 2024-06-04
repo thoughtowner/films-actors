@@ -5,7 +5,8 @@
       {% for actor in actors %}
         <li> <a href="{{ url_for('actor', actor_id=actor['id']) }}" style="text-decoration: none; color: #dbdbdb;">
           <img class="film_actor" src="{{ actor['photo'] }}">
-          <h2>Character: {{ actor['character'] }}</h2>
+          <h2>Character:</h2>
+          <h3>{{ actor['character'] }}</h3>
         </a></li>
       {% endfor %}
     </ul>

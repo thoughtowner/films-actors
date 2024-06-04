@@ -88,4 +88,3 @@ class FilmToActor(Base, IDMixin):
         nullable=True,
     )
     character: Mapped[str] = mapped_column(nullable=True)
-
