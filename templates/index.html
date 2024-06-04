@@ -4,7 +4,7 @@
     <ul class ="list">
       {% for film in films %}
         <li> <a href="{{ url_for('film', film_id=film['id']) }}" style="text-decoration: none; color: #dbdbdb;">
-          <img src="{{ film['poster'] }}">
+          <img class="film" src="{{ film['poster'] }}">
           <h2>Title: {{ film['title'] }} ({{ film['imdb_id'] }})</h2>
           <h2>Year: {{ film['year'] }}</h2>
           <h2>Country: {{ film['country'] }}</h2>

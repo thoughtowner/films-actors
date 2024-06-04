@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+{% block content %}
+  {% if actors %}
+    <ul class ="list">
+      {% for actor in actors %}
+        <li> <a href="{{ url_for('actor', actor_id=actor['id']) }}" style="text-decoration: none; color: #dbdbdb;">
+          <img class="film_actor" src="{{ actor['photo'] }}">
+        </a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No data</p>
+  {% endif %}
+{% endblock %}

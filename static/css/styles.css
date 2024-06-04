@@ -22,13 +22,29 @@ div.topnav {
 }
 
 ul.list li {
+    margin-right: 2%;
     float: left;
     list-style-type: none;
-    margin: 1%;
+    margin-bottom: 3%;
 }
 
-img {
-    width: 500px;
-    height: 750px;
+img.film {
+    width: 400px;
+    height: 600px;
     border: 3px solid black;
+}
+
+img.film_actor {
+    width: 200px;
+    height: 300px;
+    border: 2px solid black;
+}
+img.actor {
+    width: 300px;
+    height: 450px;
+    border: 3px solid black;
+}
+
+li.actor {
+    color: #dbdbdb;
 }

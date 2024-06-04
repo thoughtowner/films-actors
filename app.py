@@ -56,11 +56,19 @@ def film(film_id: UUID):
         film_data = db.get_film(film_id, session)
         actors = db.get_film_actors(film_data['id'], session)
     film_actors = {
-        'film': film_data,
         'actors': actors,
     }
     return render_template('film.html', **film_actors), config.OK
 
+
+@app.route('/actor/<actor_id>')
+def actor(actor_id: UUID):
+    with db.Session(engine) as session:
+        actor = db.get_actor(actor_id, session)
+    actor_data = {
+        'actor': actor,
+    }
+    return render_template('actor.html', **actor_data), config.OK
 
 @app.route('/add_film', methods=['GET', 'POST'])
 def add_film():
@@ -82,7 +90,7 @@ def add_film():
     if film_id:
         return redirect(f'/film/{film_id}')
     if flag:
-        msg = 'Фильм не найден, проверьте введенные данные'
+        msg = 'The film was not found, check the correctness of the entered imdb_id'
     message = {'msg': msg}
     return render_template('add_film.html', **message, form=form), config.OK
 

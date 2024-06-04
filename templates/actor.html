@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+{% block content %}
+  {% if actor %}
+    <ul class ="list">
+      <li class="actor">
+        <img class="actor" src="{{ actor['photo'] }}">
+        <h2>Name: {{ actor['full_name'] }} ({{ actor['imdb_id'] }})</h2>
+        <h2>Height: {{ actor['height'] }}</h2>
+        <h2>Birth date: {{ actor['birth_date'] }}</h2>
+        <h2>Birth place: {{ actor['place_of_birth'] }}</h2>
+      </li>
+    </ul>
+  {% else %}
+    <p>No data</p>
+  {% endif %}
+{% endblock %}

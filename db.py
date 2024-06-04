@@ -10,7 +10,8 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.exc import DataError, IntegrityError, ProgrammingError
 from sqlalchemy.orm import Session, exc
 
-from imdb_api import get_film_actors_data, get_film_data
+# from imdb_api import get_film_actors_data, get_film_data
+from imdb_api import get_film_data_from_tg, get_film_actors_data_from_tg
 from models import Actor, Film, FilmToActor
 
 
@@ -46,7 +47,8 @@ def add_film_api(imdb_id: str, session: Session) -> Film | None:
     film = session.scalar(select(Film).where(Film.imdb_id == imdb_id))
     if film:
         return film.id
-    film_data = get_film_data(imdb_id)
+    # film_data = get_film_data(imdb_id)
+    film_data = get_film_data_from_tg(imdb_id)
     if film_data:
         film = Film(**film_data)
         session.add(film)
@@ -65,7 +67,8 @@ def add_actors_api(film_id: Film, imdb_id: str, session: Session):
         imdb_id (str): The IMDb ID of the film.
         session (Session): The current database session.
     """
-    actors_data = get_film_actors_data(imdb_id)
+    # actors_data = get_film_actors_data(imdb_id)
+    actors_data = get_film_actors_data_from_tg(imdb_id)
     actors = [Actor(**actor_data) for actor_data in actors_data]
     session.add_all(actors)
     session.flush()
