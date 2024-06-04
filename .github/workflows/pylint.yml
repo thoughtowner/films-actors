@@ -1,27 +1,6 @@
 name: Main test
 on: [push]
 jobs:
-  container-job:
-    name: Tests
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_HOST: host.docker.internal
-          POSTGRES_PORT: 7930
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: change_me
-          POSTGRES_DBNAME: http-server-hw
-        ports:
-        - 7930:5432
-    steps:
-    - uses: actions/checkout@v2
-    - name: Python installation
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.11
-
   linter:
       name: Linter
       runs-on: ubuntu-latest
@@ -45,7 +24,7 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_HOST: host.docker.internal
+          POSTGRES_HOST: localhost
           POSTGRES_PORT: 7930
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: change_me
@@ -64,4 +43,4 @@ jobs:
         pip install flake8==3.9.0 wemake-python-styleguide==0.15.3 bandit==1.7.2
         pip install -r requirements.txt
     - name: Run tests
-      run: python3 app.py & pytest test_api.py
+      run: python3 app.py & pytest test_pages.py
