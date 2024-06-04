@@ -23,7 +23,7 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_HOST: localhost
+          POSTGRES_HOST: host.docker.internal
           POSTGRES_PORT: 7930
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: change_me
