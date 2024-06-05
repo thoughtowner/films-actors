@@ -16,7 +16,7 @@ film_and_actor_data = ((film_data, actor_data),)
 CREATE = 'create'
 UPDATE = 'update'
 DELETE = 'delete'
-URL = 'http://127.0.0.1:5000/'
+URL = 'http://0.0.0.0:5000/'
 PATHS = ('', 'add_film')
 POST_DATA = (
     ('film', film_data),
