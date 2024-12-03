@@ -1,7 +1,7 @@
 # Launch Instructions:
 
 ### 1. Clone a project.
-`git clone https://github.com/thoughtowner/films-and-actors`
+`git clone https://github.com/thoughtowner/films-actors`
 
 ### 2. Create an .env file.
 
@@ -24,7 +24,7 @@ SECRET_KEY=<your_uuid>
 
 ### 5. Launch a project.
 
-Go to the project folder: `cd films-and-actors`
+Go to the project folder: `cd films-actors`
 Launch for the first time: `docker compose up --build`
 In subsequent times: `docker compose up`
 Stop the work: `docker compose stop`
