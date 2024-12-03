@@ -1,7 +1,7 @@
 # Launch Instructions:
 
 ### 1. Clone a project.
-`git clone https://github.com/ilya-danilov/films-and-actors-hw`
+`git clone https://github.com/thoughtowner/films-and-actors`
 
 ### 2. Create an .env file.
 
@@ -18,17 +18,17 @@ MYAPIFILMS_KEY=<your_token>
 SECRET_KEY=<your_uuid>
 ```
 
-### 3. Get a token for MYAPIFILMS_KEY on the website https://www.myapifilms.com/imdb.do and paste it into the .env file.
+### 3. Get a token on the website https://www.myapifilms.com/imdb.do and paste it for MYAPIFILMS_KEY into the .env file.
 
-### 4. Generate any UUID and paste it into the .env file.
+### 4. Generate any UUID and paste it for SECRET_KEY into the .env file.
 
 ### 5. Launch a project.
 
-Go to the project folder: `cd films-and-actors-hw`
+Go to the project folder: `cd films-and-actors`
 Launch for the first time: `docker compose up --build`
 In subsequent times: `docker compose up`
 Stop the work: `docker compose stop`
 Reset all project settings: `docker compose down`
 
-### 6. Go to the website.
+### 6. Go to the path.
 http://0.0.0.0:5000
